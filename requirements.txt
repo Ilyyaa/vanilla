@@ -1,0 +1,6 @@
+alembic
+llama-index>=0.11.0
+llama-index-vector-stores-postgres 
+huggingface-hub==1.1.5
+llama-index-llms-huggingface
+psycopg2-binary
