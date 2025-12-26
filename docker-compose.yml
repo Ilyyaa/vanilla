@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   db:
-    image: ankane/pgvector:latest
+    image: pgvector/pgvector:pg16
     container_name: rag_vectors
     environment:
       - POSTGRES_USER=rag_user
@@ -11,6 +11,6 @@ services:
     ports:
       - '5433:5432'
     volumes:
-      - rag_pgdata:/var/lib/postgresql/data
+      - vectors:/var/lib/postgresql/data
 volumes:
-  rag_pgdata:
+  vectors:
