@@ -22,6 +22,9 @@ class Settings:
     retriever_sparse_top_k: int
     reranker_model: str
     reranker_top_n: int
+    data_txt_dir: str
+    txt_chunk_size: int
+    txt_chunk_overlap: int
 
 
 def _load_dotenv(env_file: str = ".env") -> None:
@@ -59,4 +62,7 @@ def get_settings() -> Settings:
         retriever_sparse_top_k=int(os.getenv("RETRIEVER_SPARSE_TOP_K", "30")),
         reranker_model=os.getenv("RERANKER_MODEL", "models/cross-encoder-russian-msmarco"),
         reranker_top_n=int(os.getenv("RERANKER_TOP_N", "5")),
+        data_txt_dir=os.getenv("DATA_TXT_DIR", "data_txt"),
+        txt_chunk_size=int(os.getenv("TXT_CHUNK_SIZE", "700")),
+        txt_chunk_overlap=int(os.getenv("TXT_CHUNK_OVERLAP", "100")),
     )

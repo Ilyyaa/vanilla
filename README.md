@@ -24,6 +24,9 @@ cp .env.example .env
 ```
 Используются переменные для БД, моделей, retrieval и reranker (см. `.env.example`).
 
+Используются переменные для БД, моделей, retrieval и reranker (см. `.env.example`).
+- `DATA_TXT_DIR`, `TXT_CHUNK_SIZE`, `TXT_CHUNK_OVERLAP` для txt-ридера.
+
 ## Подготовка базы данных
 Поднимите Postgres с расширением pgvector:
 ```bash
