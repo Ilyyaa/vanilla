@@ -1,5 +1,6 @@
 from fastapi import APIRouter, status, Depends, FastAPI
 from schemas import RequestIn, RequestOut
+from app.config import get_settings
 
 from llama_index.core import VectorStoreIndex, StorageContext
 from llama_index.core.query_engine import RetrieverQueryEngine
@@ -29,16 +30,18 @@ custom_prompt = PromptTemplate(
 
 
 # --- models ---
-llm = Ollama(model="qwen2.5:1.5b", request_timeout=960.0)
-embed_model = OllamaEmbedding(model_name="bge-m3") 
+settings = get_settings()
+
+llm = Ollama(model=settings.llm_model, request_timeout=settings.llm_request_timeout)
+embed_model = OllamaEmbedding(model_name=settings.embed_model)
 
 # --- postgres/pgvector ---
 pg_connection = {
-    "host": "localhost",
-    "port": 5433,
-    "user": "rag_user",
-    "password": "password",
-    "database": "rag_db",
+    "host": settings.db_host,
+    "port": settings.db_port,
+    "user": settings.db_user,
+    "password": settings.db_password,
+    "database": settings.db_name,
 }
 
 vector_store = PGVectorStore.from_params(
@@ -47,10 +50,10 @@ vector_store = PGVectorStore.from_params(
     password=pg_connection["password"],
     port=pg_connection["port"],
     user=pg_connection["user"],
-    table_name="llamaindex_vectors",
-    embed_dim=1024,               
-    hybrid_search=True,           
-    text_search_config="russian", 
+    table_name=settings.pg_table_name,
+    embed_dim=settings.embed_dim,
+    hybrid_search=True,
+    text_search_config=settings.text_search_config,
 )
 
 storage_context = StorageContext.from_defaults(vector_store=vector_store)
@@ -64,14 +67,14 @@ index = VectorStoreIndex.from_vector_store(
 # --- retriever (dense + sparse) ---
 retriever = index.as_retriever(
     vector_store_query_mode="hybrid",
-    similarity_top_k=30,  
-    sparse_top_k=30,
+    similarity_top_k=settings.retriever_top_k,
+    sparse_top_k=settings.retriever_sparse_top_k,
 )
 
 # --- cross-encoder reranker ---
 reranker = SentenceTransformerRerank(
-    model="models/cross-encoder-russian-msmarco",  
-    top_n=5,  
+    model=settings.reranker_model,
+    top_n=settings.reranker_top_n,
 )
 
 # --- query engine with reranker ---
