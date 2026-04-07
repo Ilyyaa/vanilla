@@ -17,6 +17,13 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Конфигурация через `.env`
+Скопируйте пример и при необходимости измените параметры:
+```bash
+cp .env.example .env
+```
+Используются переменные для БД, моделей, retrieval и reranker (см. `.env.example`).
+
 ## Подготовка базы данных
 Поднимите Postgres с расширением pgvector:
 ```bash
